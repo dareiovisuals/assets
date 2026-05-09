@@ -4,7 +4,27 @@
 // ═══════════════════════════════════════════════════════════════
 // 1. MASTER ENGINE: LENIS + GSAP SYNC
 // ═══════════════════════════════════════════════════════════════
-let lenis;
+if (window.innoverEngineInitialized) {
+    console.warn("⚠️ Innover Engine: Already running. Skipping duplicate init.");
+} else {
+    window.innoverEngineInitialized = true;
+    let lenis;
+
+    // Force Page Visibility immediately if wrappers are missing
+    const forceReveal = () => {
+        const wrap = document.getElementById('page-wrap');
+        if (wrap) {
+            wrap.style.opacity = '1';
+            wrap.classList.add('is-visible');
+        } else {
+            document.body.style.opacity = '1';
+            console.log("📢 Innover: #page-wrap missing, revealing body directly.");
+        }
+    };
+    
+    // Reveal after 2 seconds regardless of loader status (fail-safe)
+    setTimeout(forceReveal, 2000);
+
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("🚀 Innover Engine: Initializing...");
@@ -49,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start Loader
     initLoader();
 });
+}
 
 /**
  * Cinematic Loader Sequence
