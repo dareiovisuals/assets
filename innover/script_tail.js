@@ -58,7 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
 function initLoader() {
     const loader = document.getElementById('loader');
     const pageWrap = document.getElementById('page-wrap');
-    if (!loader) return;
+    
+    // Resilience: If loader is missing, just show the page and fire entrance
+    if (!loader) {
+        if (pageWrap) pageWrap.classList.add('is-visible');
+        window.dispatchEvent(new CustomEvent('loaderFinished'));
+        return;
+    }
 
     const v1 = document.getElementById('heroV1');
     const v2 = document.getElementById('heroV2');
