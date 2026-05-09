@@ -259,7 +259,6 @@ function initLoader() {
         });
 
         // Entrance Timeline
-        const entranceTl = gsap.timeline({ delay: 0.5 });
         const entranceTl = gsap.timeline({ paused: true });
         entranceTl.from('.hero-char', {
             y: 100,
