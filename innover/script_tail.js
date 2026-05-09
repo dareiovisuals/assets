@@ -1,3 +1,5 @@
+(function() {
+'use strict';
 // ═══════════════════════════════════════════════════════════════
 // 1. MASTER ENGINE: LENIS + GSAP SYNC
 // ═══════════════════════════════════════════════════════════════
@@ -259,8 +261,8 @@ function initLoader() {
         });
 
         // Entrance Timeline
-        const entranceTl = gsap.timeline({ paused: true });
-        entranceTl.from('.hero-char', {
+        const _innoverHeroEntranceTimeline = gsap.timeline({ paused: true });
+        _innoverHeroEntranceTimeline.from('.hero-char', {
             y: 100,
             opacity: 0,
             stagger: 0.02,
@@ -1398,3 +1400,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, 100);
 });
+
+})();
