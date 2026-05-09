@@ -260,9 +260,9 @@ function initLoader() {
             if (word.classList.contains('is-gradient')) applyGradientToChars(word);
         });
 
-        // Entrance Timeline
-        const _innoverHeroEntranceTimeline = gsap.timeline({ paused: true });
-        _innoverHeroEntranceTimeline.from('.hero-char', {
+        // Entrance Timeline — stored on window so loaderFinished can play it
+        window._heroEntranceTl = gsap.timeline({ paused: true });
+        window._heroEntranceTl.from('.hero-char', {
             y: 100,
             opacity: 0,
             stagger: 0.02,
@@ -271,10 +271,15 @@ function initLoader() {
         });
     }
 
-    // Call hero entrance when loader finishes (hook into initLoader cleanup)
+    // Call hero entrance when loader finishes — chars must be split first
     window.addEventListener('loaderFinished', () => {
         console.log("🎬 Loader Finished: Playing Hero Entrance");
-        gsap.to('.hero-char', { y: 0, opacity: 1, stagger: 0.02, duration: 1, ease: 'power4.out' });
+        if (window._heroEntranceTl) {
+            window._heroEntranceTl.play();
+        } else {
+            // Fallback if timeline wasn't built (e.g. skip-loader path)
+            gsap.to('.hero-char', { y: 0, opacity: 1, stagger: 0.02, duration: 1, ease: 'power4.out' });
+        }
     });
 
     // ─────────────────────────────────────────────────────────────
@@ -425,8 +430,8 @@ function initLoader() {
       });
     }
 
-    // Initialize video scrub immediately. The timeline checks for duration internally.
-    initVideoScrub();
+    // NOTE: initVideoScrub() is called inside mm.add desktop block above.
+    // Do NOT call it again here — duplicate ScrollTriggers will conflict.
 
     // ─────────────────────────────────────────────────────────────
     // PHASE 3 — PREMIUM STATEMENT (Word-by-Word Sequential Reveal)
@@ -922,7 +927,9 @@ function initLoader() {
     initTestimonials();
 
 // ── Form Validation Animations ──
-document.addEventListener('DOMContentLoaded', () => {
+// NOTE: This runs at module scope (not inside a second DOMContentLoaded)
+// because the outer DOMContentLoaded on line 31 already guarantees DOM is ready.
+(function() {
     const allInputs = document.querySelectorAll('.smart-input, input[type="radio"], input[type="checkbox"], select, .footer-quick-form input, .footer-quick-form textarea');
     const allForms = document.querySelectorAll('form');
 
@@ -977,6 +984,7 @@ document.addEventListener('DOMContentLoaded', () => {
         checkFormReady(input.closest('form'));
       });
     });
+})(); // end Form Validation IIFE
 
 
 // ═══════════════════════════════════════════════════════════════
