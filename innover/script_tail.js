@@ -211,7 +211,9 @@ function initLoader() {
         const GRADIENT = 'linear-gradient(90deg, #1E65FF 0%, #60A5FA 45%, #FACC15 80%, #FFD700 100%)';
 
         function charsFrom(text, parent) {
-            text.split('').forEach(ch => {
+            // Deep Clean: remove invisible Webflow newlines and normalize spaces
+            const cleanText = text.replace(/\n/g, ' ').replace(/\s+/g, ' ');
+            cleanText.split('').forEach(ch => {
                 const s = document.createElement('span');
                 s.className = 'hero-char';
                 s.textContent = ch === ' ' ? '\u00A0' : ch;
@@ -250,7 +252,8 @@ function initLoader() {
             });
         }
 
-        document.querySelectorAll('.hero-title-word').forEach((word, i) => {
+        document.querySelectorAll('.hero-title-word, .heading-xl-word').forEach((word, i) => {
+            console.log("🎭 Splitting word:", word.innerText);
             splitWord(word);
             if (word.classList.contains('is-gradient')) applyGradientToChars(word);
         });
