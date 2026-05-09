@@ -1,22 +1,21 @@
 // ═══════════════════════════════════════════════════════════════
 // 1. MASTER ENGINE: LENIS + GSAP SYNC
 // ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// 1. MASTER ENGINE: LENIS + GSAP SYNC
+// ═══════════════════════════════════════════════════════════════
 let lenis;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ── REGISTER GSAP PLUGINS ──
+    console.log("🚀 Innover Engine: Initializing...");
+    
+    // Register GSAP Plugins
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
-        
-        // Stabilization Config
-        ScrollTrigger.config({ 
-            limitCallbacks: true, 
-            ignoreMobileResize: true, 
-            autoRefreshEvents: "visibilitychange,DOMContentLoaded,load" 
-        });
+        console.log("✅ GSAP & ScrollTrigger: Ready");
     }
 
-    // ── INITIALIZE LENIS ──
+    // Initialize Lenis
     if (typeof Lenis !== 'undefined') {
         lenis = new Lenis({
             duration: 1.2,
@@ -28,15 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
             touchMultiplier: 2,
         });
         window.lenis = lenis;
-
-        // Sync ScrollTrigger with Lenis
         lenis.on('scroll', ScrollTrigger.update);
-
-        // Master Render Loop (Ticker)
         gsap.ticker.add((time) => {
             lenis.raf(time * 1000);
-            
-            // Video scrubbing loop
             if (window._homeScrollVideo && !window._homeScrollVideo.seeking && window._homeScrollVideo.readyState >= 2) {
                 const targetTime = window.videoProxy.currentTime;
                 if (Math.abs(window._homeScrollVideo.currentTime - targetTime) > 0.01) {
@@ -44,11 +37,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
         gsap.ticker.lagSmoothing(0);
+        console.log("✅ Lenis: Smooth Scroll Synced");
     }
 
-    // ── LOADER & PAGE READY ──
+    // CRITICAL: Initialize Hero logic BEFORE the loader fires
+    if (typeof initHeroEntrance === 'function') {
+        initHeroEntrance();
+    }
+
+    // Start Loader
     initLoader();
 });
 
@@ -188,6 +186,7 @@ function initLoader() {
     // ─────────────────────────────────────────────────────────────
     
     function initHeroEntrance() {
+        console.log("🎭 Hero: Preparing Character Split...");
         const GRADIENT = 'linear-gradient(90deg, #1E65FF 0%, #60A5FA 45%, #FACC15 80%, #FFD700 100%)';
 
         function charsFrom(text, parent) {
@@ -237,6 +236,7 @@ function initLoader() {
 
         // Entrance Timeline
         const entranceTl = gsap.timeline({ delay: 0.5 });
+        const entranceTl = gsap.timeline({ paused: true });
         entranceTl.from('.hero-char', {
             y: 100,
             opacity: 0,
@@ -247,7 +247,10 @@ function initLoader() {
     }
 
     // Call hero entrance when loader finishes (hook into initLoader cleanup)
-    window.addEventListener('loaderFinished', initHeroEntrance);
+    window.addEventListener('loaderFinished', () => {
+        console.log("🎬 Loader Finished: Playing Hero Entrance");
+        gsap.to('.hero-char', { y: 0, opacity: 1, stagger: 0.02, duration: 1, ease: 'power4.out' });
+    });
 
     // ─────────────────────────────────────────────────────────────
     // 4. MASTER RESPONSIVE ENGINE (MATCHMEDIA)
