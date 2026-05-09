@@ -1350,6 +1350,7 @@ async function handleSubmission(e, type) {
     }
 }
 
+
 // Initializing internal page logic
 document.addEventListener('DOMContentLoaded', () => {
     initOurProcess();
