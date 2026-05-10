@@ -102,7 +102,7 @@ function initLoader() {
         loader.style.display = 'none';
         document.body.classList.add('skip-loader');
         if (pageWrap) pageWrap.classList.add('is-visible');
-        if (v2) { v2.style.opacity = '1'; v2.play().catch(() => {}); }
+        if (v2) { v2.style.opacity = "1"; v2.loop = true; v2.play().catch(() => {}); }
         if (v1) { v1.style.opacity = '0'; v1.pause(); }
         window._heroCrossfadeDone = true;
         return;
@@ -267,7 +267,7 @@ function initLoader() {
             opacity: 0,
             stagger: 0.02,
             duration: 1,
-            ease: 'power4.out'
+            ease: 'expo.out'
         });
     }
 
@@ -278,7 +278,7 @@ function initLoader() {
             window._heroEntranceTl.play();
         } else {
             // Fallback if timeline wasn't built (e.g. skip-loader path)
-            gsap.to('.hero-char', { y: 0, opacity: 1, stagger: 0.02, duration: 1, ease: 'power4.out' });
+            gsap.to('.hero-char', { y: 0, opacity: 1, stagger: 0.02, duration: 1, ease: 'expo.out' });
         }
     });
 
@@ -410,7 +410,7 @@ function initLoader() {
           
           if (homeScrollWrapper) {
             gsap.set(homeScrollWrapper, { 
-              autoAlpha: expandProgress,
+              autoAlpha: 1,
               clipPath: `inset(${topInset}% ${xInset}% ${bottomInset}% ${xInset}% round ${radius}px)`,
               filter: 'brightness(1)'
             });
@@ -831,7 +831,7 @@ function initLoader() {
             onEnter: () => gsap.to(pfWords, {
               y: '0%',
               duration: 1.05,
-              ease: 'power4.out',
+              ease: 'expo.out',
               stagger: 0.11,
               delay: 0.1,
             }),
