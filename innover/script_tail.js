@@ -781,7 +781,7 @@ function initLoader() {
             background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.95) 10%, rgba(30, 64, 175, 0.6) 35%, rgba(15, 23, 42, 0.3) 60%, transparent 80%)'
           });
 
-          const domeTl = gsap.timeline({
+//           const domeTl = gsap.timeline({
             scrollTrigger: {
               trigger: pfSection,
               start: 'top bottom',           
