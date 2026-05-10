@@ -325,7 +325,7 @@ function initLoader() {
         if (pfSection) {
             const glowDome = document.getElementById('pf-dome-rising');
             if (glowDome) {
-                const domeTl = gsap.timeline({
+                const domeTlPremium = gsap.timeline({
                     scrollTrigger: {
                         trigger: pfSection,
                         start: 'top bottom',
@@ -333,7 +333,7 @@ function initLoader() {
                         scrub: 1.5,
                     }
                 });
-                domeTl.to(glowDome, { y: '-10vw', opacity: 0.75, ease: 'none', duration: 0.8 })
+                domeTlPremium.to(glowDome, { y: '-10vw', opacity: 0.75, ease: 'none', duration: 0.8 })
                       .to(glowDome, { scale: 2.5, opacity: 1, ease: 'power2.in', duration: 0.2 });
             }
         }
@@ -793,7 +793,7 @@ function initLoader() {
             }
           });
 
-          domeTl.to(glowDome, {
+          domeTlPremium.to(glowDome, {
             y: '-10vw',
             opacity: 0.75,
             ease: 'none',
