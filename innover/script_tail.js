@@ -209,6 +209,8 @@ function initLoader() {
     // ─────────────────────────────────────────────────────────────
     
     function initHeroEntrance() {
+        if (window._heroEntranceInitialized) return;
+        window._heroEntranceInitialized = true;
         console.log("🎭 Hero: Preparing Character Split...");
         const GRADIENT = 'linear-gradient(90deg, #1E65FF 0%, #60A5FA 45%, #FACC15 80%, #FFD700 100%)';
 
@@ -267,7 +269,8 @@ function initLoader() {
             opacity: 0,
             stagger: 0.02,
             duration: 1,
-            ease: 'expo.out'
+            ease: 'expo.out',
+            overwrite: true
         });
     }
 
@@ -319,24 +322,6 @@ function initLoader() {
 
         // Initialize Video Scrub (The Grand Swap)
         initVideoScrub();
-
-        // Portfolio Dome Glow
-        const pfSection = document.querySelector('#portfolio-showcase');
-        if (pfSection) {
-            const glowDome = document.getElementById('pf-dome-rising');
-            if (glowDome) {
-                const domeTlPremium = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: pfSection,
-                        start: 'top bottom',
-                        end: 'center center',
-                        scrub: 1.5,
-                    }
-                });
-                domeTlPremium.to(glowDome, { y: '-10vw', opacity: 0.75, ease: 'none', duration: 0.8 })
-                      .to(glowDome, { scale: 2.5, opacity: 1, ease: 'power2.in', duration: 0.2 });
-            }
-        }
         
         return () => { /* Cleanup if needed */ };
     });
@@ -584,11 +569,27 @@ function initLoader() {
       );
     });
 
-    // ── Sticky nav (uses Lenis scroll — compatible with smooth scroll proxy) ──
-    const navbar = document.getElementById('navbar');
-    lenis.on('scroll', ({ scroll }) => {
-      navbar.classList.toggle('scrolled', scroll > 60);
-    });
+    // ── Sticky nav with smart hide (uses Lenis or native scroll) ──
+    const navbar = document.querySelector('.navbar, #navbar');
+    let lastScrollY = window.scrollY || 0;
+    
+    function handleNavScroll(scrollY) {
+      if (!navbar) return;
+      navbar.classList.toggle('scrolled', scrollY > 60);
+      
+      if (scrollY > lastScrollY && scrollY > 100) {
+        navbar.classList.add('nav-hidden');
+      } else {
+        navbar.classList.remove('nav-hidden');
+      }
+      lastScrollY = scrollY;
+    }
+
+    if (typeof lenis !== 'undefined' && lenis) {
+      lenis.on('scroll', ({ scroll }) => handleNavScroll(scroll));
+    } else {
+      window.addEventListener('scroll', () => handleNavScroll(window.scrollY), { passive: true });
+    }
 
     // ── Mobile menu ──
     const openBtn  = document.getElementById('openMenu');
@@ -843,7 +844,7 @@ function initLoader() {
 
     // ════ 3B. TESTIMONIALS (KINETIC CARDS) ════
     function initTestimonials() {
-      const sequence = document.getElementById('testimonial-sequence');
+      const sequence = document.querySelector('.testimonial-sequence, #testimonial-sequence');
       if (!sequence) return;
 
       // 1. Stagger Entrance
@@ -885,8 +886,8 @@ function initLoader() {
           ease: 'none',
           scrollTrigger: {
             trigger: sequence,
-            start: 'top 80%', // Starts fading as testimonials enter
-            end: 'top 20%',   // Fully dark blue by the time they read
+            start: 'top 100%', // Starts fading as soon as testimonials touch viewport bottom
+            end: 'top 40%',    // Fully faded out before solid background covers the middle
             scrub: true
           }
         });
